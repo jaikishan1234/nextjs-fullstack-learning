@@ -1,8 +1,11 @@
+import Link from 'next/link'
 import React from 'react'
 
 const TwoPage = () => {
   return (
-    <div>TwoPage</div>
+    <div>
+        <Link href={"/four"}>Go to Four</Link>
+    </div>
   )
 }
 
