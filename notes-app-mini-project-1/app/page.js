@@ -1,63 +1,81 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from 'react';
 
 export default function Home() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [notes, setNotes] = useState([]);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const fetchNotes = async () => {
-    try {
-      const res = await fetch("/api/notes");
-      const data = await res.json();
-
-      console.log(data);
-
-      setNotes(data);
-    } catch (error) {
-      console.error("Error fetching notes:", error);
-    }
-  };
-
+  // Fetch all notes
   useEffect(() => {
     fetchNotes();
   }, []);
 
-  const onSubmit = async (e) => {
-    if (!title || !content) {
-      alert("Please fill in all fields");
-      return;
-    }
-
+  const fetchNotes = async () => {
     try {
-      setIsLoading(true);
-
-      const res = await fetch("/api/notes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ title, content }),
-      });
-      if (res.ok) {
-        fetchNotes();
-        alert("Notes created successfully");
-        setTitle("");
-        setContent("");
-      }
+      const res = await fetch('/api/notes');
+      const data = await res.json();
+      setNotes(data);
     } catch (error) {
-      console.error("Error saving note:", error);
-
-      alert("Error saving note");
-    } finally {
-      setIsLoading(false);
+      console.error('Error fetching notes:', error);
     }
   };
 
-  const handleEdit = () => {}
+  // Create or update note
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!title || !content) {
+      alert('Please fill in all fields');
+      return;
+    }
 
+    setLoading(true);
+    try {
+      if (editingId) {
+        // Update existing note
+        const res = await fetch(`/api/notes/${editingId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, content }),
+        });
+        if (res.ok) {
+          fetchNotes();
+          setEditingId(null);
+          setTitle('');
+          setContent('');
+        }
+      } else {
+        // Create new note
+        const res = await fetch('/api/notes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, content }),
+        });
+        if (res.ok) {
+          fetchNotes();
+          setTitle('');
+          setContent('');
+        }
+      }
+    } catch (error) {
+      console.error('Error saving note:', error);
+      alert('Error saving note');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Edit note
+  const handleEdit = (note) => {
+    setEditingId(note._id);
+    setTitle(note.title);
+    setContent(note.content);
+  };
+
+  // Delete note
   const handleDelete = async (id) => {
     if (!confirm('Are you sure?')) return;
 
@@ -72,22 +90,27 @@ export default function Home() {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-950 p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-yellow-400 mb-2">My Notes</h1>
+  // Cancel editing
+  const handleCancel = () => {
+    setEditingId(null);
+    setTitle('');
+    setContent('');
+  };
 
-          <p className="text-gray-400">
-            Create, read, update, and delete your notes
-          </p>
+  return (
+    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 p-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">My Notes</h1>
+          <p className="text-gray-600">Create, read, update, and delete your notes</p>
         </div>
 
         {/* Form */}
-        <div className="bg-gray-900 rounded-lg shadow-md p-6 mb-8 border border-gray-800">
-          <form onSubmit={onSubmit}>
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-yellow-400 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Title
               </label>
               <input
@@ -95,47 +118,54 @@ export default function Home() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter note title..."
-                className="w-full px-4 py-2 border border-gray-700 bg-gray-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-yellow-400 mb-2">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Content
               </label>
               <textarea
-                type="text"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="Enter note title..."
-                rows={"5"}
-                className="w-full px-4 py-2 border border-gray-700 bg-gray-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500"
+                placeholder="Enter note content..."
+                rows="5"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div className="flex gap-2">
               <button
                 type="submit"
-                disabled={isLoading}
-                className="flex-1 bg-yellow-500 text-gray-900 py-2 px-4 rounded-lg hover:bg-yellow-600 disabled:bg-gray-600 transition font-semibold"
+                disabled={loading}
+                className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition"
               >
-                Add Note
+                {loading ? 'Saving...' : editingId ? 'Update Note' : 'Add Note'}
               </button>
+              {editingId && (
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="bg-gray-400 text-white py-2 px-4 rounded-lg hover:bg-gray-500 transition"
+                >
+                  Cancel
+                </button>
+              )}
             </div>
           </form>
         </div>
 
+        {/* Notes List */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {notes.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-gray-500 text-lg">
-                No notes yet. Create one to get started!
-              </p>
+              <p className="text-gray-500 text-lg">No notes yet. Create one to get started!</p>
             </div>
           ) : (
             notes.map((note) => (
-              <div key={note._id} className="bg-gray-900 rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-semibold text-yellow-400 mb-2">{note.title}</h2>
+              <div key={note._id} className="bg-white rounded-lg shadow-md p-6">
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">{note.title}</h2>
                 <p className="text-gray-600 mb-4 line-clamp-3">{note.content}</p>
                 <p className="text-sm text-gray-400 mb-4">
                   {new Date(note.createdAt).toLocaleDateString()}
