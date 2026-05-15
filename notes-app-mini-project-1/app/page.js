@@ -57,7 +57,20 @@ export default function Home() {
   };
 
   const handleEdit = () => {}
-  const handleDelete = () => {}
+
+  const handleDelete = async (id) => {
+    if (!confirm('Are you sure?')) return;
+
+    try {
+      const res = await fetch(`/api/notes/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchNotes();
+      }
+    } catch (error) {
+      console.error('Error deleting note:', error);
+      alert('Error deleting note');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-950 p-8">
