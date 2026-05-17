@@ -1,10 +1,13 @@
-"use client"
-import { usePathname } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  const pathname = usePathname()
+  const isLoggedIn = true;
+
+  if (!isLoggedIn) {
+    redirect("/login");
+  }
 
   return (
-    <h1>Current pathname: {pathname} </h1>
-  )
+    <h1>Current Pathname</h1>
+  );
 }
