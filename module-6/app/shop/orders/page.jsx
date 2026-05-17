@@ -1,9 +1,22 @@
-import React from 'react'
+"use client";
+
+import React from "react";
+import { useRouter } from "next/navigation";
 
 const Orders = () => {
-  return (
-    <div>Orders</div>
-  )
-}
+  const router = useRouter();
 
-export default Orders
+  return (
+    <>
+    <div
+      className="hover:cursor-pointer"
+      onClick={() => router.push("/shop/products")}
+    >
+      Go To Products 
+    </div>
+    <button className="flex cursor-pointer" onClick={() => router.refresh()}>Refresh</button>
+    </>
+  );
+};
+
+export default Orders;
