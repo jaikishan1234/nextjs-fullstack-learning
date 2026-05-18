@@ -1,0 +1,29 @@
+import React from "react";
+import Form from "next/form";
+import { submitUser } from "@/actions/actions";
+
+const FormsPage = () => {
+  return (
+    <div>
+      <h1>Create User</h1>
+
+      <Form action={submitUser}>
+        <input type="text" name="name" placeholder="Enter name" />
+
+        <input type="email" name="email" placeholder="Enter email" />
+
+        <button type="submit">Submit</button>
+      </Form>
+
+      <h1>Search Form</h1>
+
+      <Form action={"/search"}>
+        <input type="text" name="query" placeholder="Search post id" />
+
+        <button type="submit">Search</button>
+      </Form>
+    </div>
+  );
+};
+
+export default FormsPage;
