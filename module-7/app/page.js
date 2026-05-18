@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const Home = () => {
@@ -143,6 +144,16 @@ const Home = () => {
           Button
         </button>
       </div>
+
+      <Link
+        href={{
+          pathname: "/about",
+          query: { name: "John Doe" },
+        }}
+        className="text-blue-500 underline px-4 py-5"
+      >
+        Go To About
+      </Link>
     </section>
   );
 };
