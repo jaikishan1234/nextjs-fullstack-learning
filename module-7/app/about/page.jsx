@@ -1,19 +1,26 @@
+"use client"
 import React from "react";
 // import { Roboto_Mono } from 'next/font/google'
-import localFont  from 'next/font/local'
- 
+import localFont from "next/font/local";
+import Link from "next/link";
+
 // const roboto_mono = Roboto_Mono({
 //   subsets: ['latin'],
 //   display: 'swap',
 // })
 
 const nabiaFont = localFont({
-    src: "../../public/Nabla-Regular-VariableFont_EDPT,EHLT.ttf"
-}) 
+  src: "../../public/Nabla-Regular-VariableFont_EDPT,EHLT.ttf",
+});
 
 const AboutPage = () => {
   return (
     <section className={`text-gray-600 body-font ${nabiaFont.className}`}>
+      <Link href={"/forms"} className="text-emerald-500 underline px-4 py-5 " replace
+        onNavigate={() => console.log("Navigated")}
+      >
+        Go To Home
+      </Link>
       <div className="container px-5 py-24 mx-auto">
         <div className="xl:w-1/2 lg:w-3/4 w-full mx-auto text-center">
           <svg

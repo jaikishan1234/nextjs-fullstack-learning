@@ -1,8 +1,12 @@
+"use client";
 import React from "react";
 import Form from "next/form";
 import { submitUser } from "@/actions/actions";
+import { useRouter } from "next/navigation";
 
 const FormsPage = () => {
+    const router = useRouter();
+
   return (
     <div>
       <h1>Create User</h1>
@@ -22,6 +26,8 @@ const FormsPage = () => {
 
         <button type="submit">Search</button>
       </Form>
+
+      <button onClick={() => router.back()}>Go Back</button>
     </div>
   );
 };
