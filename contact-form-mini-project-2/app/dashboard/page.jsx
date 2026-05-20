@@ -1,3 +1,4 @@
+import { StatusButton } from "@/components/status-button";
 import { dbConnect } from "@/lib/db";
 import Contact from "@/lib/models/Contact";
 import React from "react";
@@ -9,9 +10,7 @@ const Dashboard = async () => {
 
   return (
     <div className="p-10">
-      <h1 className="text-2xl mb-6">
-        Contact Messages
-      </h1>
+      <h1 className="text-2xl mb-6">Contact Messages</h1>
 
       {contacts.map((contact) => (
         <div key={contact._id} className="border p-4 mb-4">
@@ -19,9 +18,11 @@ const Dashboard = async () => {
           <p>{contact.email}</p>
           <p>{contact.message}</p>
 
-          <button>
-            {contact.status}
-          </button>
+          {contact.status === "resolved" ? (
+            <p className="text-green-400">{contact.status}</p>
+          ) : (
+            <StatusButton id={contact._id.toString()} />
+          )}
         </div>
       ))}
     </div>
