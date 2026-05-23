@@ -1,4 +1,6 @@
 "use client"
+import AddPost from "@/components/add-post";
+import PostsList from "@/components/post-list";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
@@ -29,29 +31,32 @@ export default function Home() {
 // }, []);
 
 
-const { data, error, isLoading } = useQuery({
-  queryKey: ["user-data"],
-  queryFn: () =>
-    fetch(
-      "https://api.freeapi.app/api/v1/public/randomusers?page=1&limit=10"
-    ).then((res) => res.json()),
-});
+// const { data, error, isLoading } = useQuery({
+//   queryKey: ["user-data"],
+//   queryFn: () =>
+//     fetch(
+//       "https://api.freeapi.app/api/v1/public/randomusers?page=1&limit=10"
+//     ).then((res) => res.json()),
+// });
 
-if (isLoading) {
-  return (
-    <div>Loading...</div>
-  );
-}
+// if (isLoading) {
+//   return (
+//     <div>Loading...</div>
+//   );
+// }
 
-if (error) {
-  return (
-    <div>{error}</div>
-  );
-}
+// if (error) {
+//   return (
+//     <div>{error}</div>
+//   );
+// }
 
   return (
     <div>
-      {JSON.stringify(data, null, 2)}
+      {/* {JSON.stringify(data, null, 2)} */}
+      <h1>Posts</h1>
+      <PostsList />
+      <AddPost />
     </div>
   );
 }
