@@ -4,18 +4,32 @@ import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { Trash } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteTodo, toggleTodo } from "@/actions/todo-action";
+import { toggleTodo } from "@/actions/todo-action";
 import { toast } from "sonner";
 
 export const TodoItem = ({ todo }) => {
   const queryClient = useQueryClient();
+
+  const { mutate: toggle } = useMutation({
+    mutationFn: ({ id, completed }) => toggleTodo(id, completed),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+    onError: (err) => {
+      console.log(err);
+      toast.error(err);
+    },
+  });
+
 
   return (
     <div className="flex items-center justify-between p-4 bg-card border rounded-lg shadow-sm hover:shadow-md transition-shadow mb-3">
       <div className="flex items-center gap-3">
         <Checkbox
           checked={todo.completed}
-          onCheckedChange={() => {}}
+           onCheckedChange={(checked) =>
+            toggle({ id: todo._id, completed: checked })
+          }
           id={`todo-${todo._id}`}
         />
 
