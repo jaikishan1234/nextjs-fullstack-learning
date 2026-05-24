@@ -19,3 +19,16 @@ export async function addTodo(data) {
     return { error: "Failed to create todo" };
   }
 }
+
+
+export async function getTodos() {
+  await connectDB();
+
+  try {
+    const todos = await Todo.find({}).sort({ createdAt: -1 });
+    return JSON.parse(JSON.stringify(todos));
+  } catch (error) {
+    console.error("Failed to fetch todos:", error);
+    throw new Error("Failed to fetch todos");
+  }
+}
