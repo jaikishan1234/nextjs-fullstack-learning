@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { Trash } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toggleTodo } from "@/actions/todo-action";
+import { deleteTodo, toggleTodo } from "@/actions/todo-action";
 import { toast } from "sonner";
 
 export const TodoItem = ({ todo }) => {
@@ -21,13 +21,23 @@ export const TodoItem = ({ todo }) => {
     },
   });
 
+  const {mutate:remove} = useMutation({
+    mutationFn:(id)=>deleteTodo(id),
+    onSuccess:()=>{
+      toast.success("Todo is Deleted")
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+    onError:(error)=>{
+      toast.error(error)
+    }
+  })
 
   return (
     <div className="flex items-center justify-between p-4 bg-card border rounded-lg shadow-sm hover:shadow-md transition-shadow mb-3">
       <div className="flex items-center gap-3">
         <Checkbox
           checked={todo.completed}
-           onCheckedChange={(checked) =>
+          onCheckedChange={(checked) =>
             toggle({ id: todo._id, completed: checked })
           }
           id={`todo-${todo._id}`}
@@ -43,7 +53,7 @@ export const TodoItem = ({ todo }) => {
           {todo.title}
         </label>
       </div>
-      <Button onClick={()=>{}} variant="destructive" size="icon" >
+      <Button onClick={()=>remove(todo._id)} variant="destructive" size="icon" >
         <Trash size={18} />
       </Button>
     </div>

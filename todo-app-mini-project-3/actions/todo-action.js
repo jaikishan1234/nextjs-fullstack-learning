@@ -20,7 +20,6 @@ export async function addTodo(data) {
   }
 }
 
-
 export async function getTodos() {
   await connectDB();
 
@@ -32,7 +31,6 @@ export async function getTodos() {
     throw new Error("Failed to fetch todos");
   }
 }
-
 
 export async function toggleTodo(id, completed) {
   await connectDB();
@@ -47,5 +45,19 @@ export async function toggleTodo(id, completed) {
   } catch (error) {
     console.error("Failed to toggle todos:", error);
     throw new Error("Failed to toggle todos");
+  }
+}
+
+export async function deleteTodo(id) {
+  await connectDB();
+  try {
+    await Todo.findByIdAndDelete(id);
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Failed to delete todos:", error);
+    throw new Error("Failed to delete todos");
   }
 }
