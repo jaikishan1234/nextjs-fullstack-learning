@@ -1,65 +1,91 @@
-import Image from "next/image";
+import { createUser, getUsers } from "@/actions/user.action";
+import UserCard from "@/components/UserCard";
 
-export default function Home() {
+export default async function Page() {
+  const users = await getUsers();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-black text-white">
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        
+        {/* Header */}
+        <div className="mb-12">
+          <h1 className="text-5xl font-bold tracking-tight text-red-500">
+            User Dashboard
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="text-zinc-500 mt-3 text-lg">
+            Next.js + Drizzle ORM + Server Actions
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Create User */}
+        <div className="bg-[#111111] border border-red-950 rounded-3xl p-8 shadow-2xl mb-12">
+          <h2 className="text-2xl font-semibold mb-8 text-red-400">
+            Create User
+          </h2>
+
+          <form
+            action={async (formData) => {
+              "use server";
+
+              await createUser({
+                name: formData.get("name") as string,
+                email: formData.get("email") as string,
+                password: formData.get("password") as string,
+              });
+            }}
+            className="grid md:grid-cols-2 gap-5"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name"
+              className="bg-[#1a1a1a] border border-zinc-800 rounded-2xl px-5 py-4 outline-none focus:border-red-500 transition"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              className="bg-[#1a1a1a] border border-zinc-800 rounded-2xl px-5 py-4 outline-none focus:border-red-500 transition"
+            />
+
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              className="bg-[#1a1a1a] border border-zinc-800 rounded-2xl px-5 py-4 outline-none focus:border-red-500 transition md:col-span-2"
+            />
+
+            <button
+              type="submit"
+              className="md:col-span-2 bg-red-500 hover:bg-red-600 transition rounded-2xl py-4 text-lg font-semibold"
+            >
+              Create User
+            </button>
+          </form>
         </div>
-      </main>
+
+        {/* Users */}
+        <div>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-semibold text-red-400">
+              Users
+            </h2>
+
+            <p className="text-zinc-500">
+              {users.length} Users
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {users.map((user) => (
+              <UserCard key={user.id} user={user} />
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
