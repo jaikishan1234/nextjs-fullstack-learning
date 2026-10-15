@@ -316,4 +316,4 @@ For each concept, practice: **definition → how it works → realistic example 
 
 ## Scope and maintenance
 
-This repository is organized into six conceptual batches, but all sections are included in this archive for convenience. Re-check official documentation when upgrading Next.js, React, or related tooling.
+All 28 curriculum folders are included in this archive. Individual topic files now use topic-specific mechanisms, examples, pitfalls, and exercises rather than repeating the same generic sections. Re-check official documentation when upgrading Next.js, React, or related tooling.
